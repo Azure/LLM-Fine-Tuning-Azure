@@ -101,31 +101,48 @@ Or leave them at default values.
 ### Step 6: Review and *Submit*
 
 1. Review your configuration.
-2. Click **Submit** to start the fine-tuning job.
-3. Monitor progress in the **Status** column of the **Fine-tuning** pane.
+1. Click **Submit** to start the fine-tuning job.
+1. Monitor progress in the **Status** column of the **Fine-tuning** pane.
     > ⏱️ *Training duration depends on dataset size and selected parameters.*  
     <ol><img src="../images/screenshot-foundry-status-check.png" alt="Screenshot of reviewing the status of the fine-tuning job" width="600"/></ol>
 
-When the fine-tuning process finishes, you will see the **Status** showing **Completed**.  
-<ol><img src="../images/screenshot-foundry-job-completed.png" alt="Screenshot of completed status of the fine-tuning job" width="600"/></ol>
+1. When the fine-tuning process finishes, you will see the **Status** showing **Completed**.  
+    <ol><img src="../images/screenshot-foundry-job-completed.png" alt="Screenshot of completed status of the fine-tuning job" width="600"/></ol>
 
 ---
 
 ### Step 7: *Deploy* your fine-tuned model
 
-1. Once training completes, select your model in the **Fine-tuning** pane.
-2. Click **Use this model**.
+1. Once training is complete, select your new model in the **Fine-tuning** left pane.
+1. Click **Use this model**.
     <ol><img src="../images/screenshot-foundry-use-model.png" alt="Screenshot of deploying the fine-tuned model" width="600"/></ol>
 
-3. In the **Deploy model** dialog, enter a deployment name and click **Deploy**.  
+1. In the **Deploy model** dialog, enter a deployment name and click **Deploy**.  
+
+    You can customize the options such as:
+
+    * Deployment type
+    * Tokens per Minute Rate Limit
+    * Content filter
+
+    Or leave them at default values.
+
     <ol><img src="../images/screenshot-foundry-deploy-model.png" alt="Screenshot of configuring the deployment of the fine-tuned model" width="600"/></ol>
 
 ---
 
 ### Step 8: *Test and use* your deployed model
 
-* Use the **Playgrounds** in Azure AI Foundry to test your model interactively.  
+1. Use the **Playgrounds** in the left pane in Azure AI Foundry to test your model interactively.
+1. Click **Try the Chat playground** option.
+1. In the **Deployment** option, select the **new model name**
     <ol><img src="../images/screenshot-foundry-playground.png" alt="Screenshot of completed deployment of the fine-tuned model" width="600"/></ol>
+1. Ask a query about a math problem. For example:
+
+    * Sophie is training for a marathon and needs to run 120 miles over the next 4 weeks to prepare. In the first week, she ran 18 miles. In the second week, she increased her distance by 50% compared to the first week. In the third week, she ran 5 miles less than in the second week due to bad weather. How many miles does Sophie need to run in the fourth week to reach her goal of 120 miles?
+
+1. The response should be similar to this:
+    <ol><img src="../images/screenshot-foundry-playground-2.png" alt="Screenshot of completed deployment of the fine-tuned model" width="600"/></ol>
 
 ---
 
