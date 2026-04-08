@@ -7,510 +7,1114 @@
   <meta name="description" content="A modular, beginner-to-expert guide to fine-tuning both OpenAI GPT models and open-source LLMs/SLMs on Azure.">
   <style>
     :root {
-      --azure-blue: #0078d4;
-      --azure-dark: #003d6b;
-      --azure-light: #e6f2ff;
-      --bg: #ffffff;
-      --text: #1a1a1a;
-      --text-muted: #555;
-      --border: #e0e0e0;
-      --card-bg: #f9fafb;
-      --accent-green: #107c10;
-      --accent-orange: #ff8c00;
-      --accent-purple: #5c2d91;
-      --gradient-start: #0078d4;
-      --gradient-end: #5c2d91;
+      --near-black: #141413;
+      --dark-surface: #30302e;
+      --charcoal-warm: #4d4c48;
+      --olive-gray: #5e5d59;
+      --stone-gray: #87867f;
+      --warm-silver: #b0aea5;
+      --ring-warm: #d1cfc5;
+      --ring-deep: #c2c0b6;
+      --border-warm: #e8e6dc;
+      --border-cream: #f0eee6;
+      --warm-sand: #e8e6dc;
+      --parchment: #f5f4ed;
+      --ivory: #faf9f5;
+      --terracotta: #c96442;
+      --coral: #d97757;
+      --error-crimson: #b53333;
+      --font-serif: Georgia, 'Times New Roman', serif;
+      --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-      color: var(--text);
-      line-height: 1.6;
-      background: var(--bg);
+      font-family: var(--font-sans);
+      color: var(--near-black);
+      line-height: 1.60;
+      background: var(--parchment);
     }
 
-    /* Hero */
+    /* ── Nav ── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(250,249,245,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-cream);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      font-family: var(--font-serif);
+      font-size: 1.06rem;
+      font-weight: 500;
+      color: var(--near-black);
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.94rem;
+      color: var(--olive-gray);
+      text-decoration: none;
+      font-weight: 400;
+      transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--near-black); }
+    .nav-cta {
+      background: var(--terracotta) !important;
+      color: var(--ivory) !important;
+      padding: 8px 20px !important;
+      border-radius: 8px;
+      font-weight: 500 !important;
+      box-shadow: var(--terracotta) 0px 0px 0px 0px, var(--terracotta) 0px 0px 0px 1px;
+      transition: transform 0.15s;
+    }
+    .nav-cta:hover { transform: translateY(-1px); }
+
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+
+    /* ── Hero (Dark) ── */
     .hero {
-      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-      color: white;
-      padding: 80px 20px 60px;
+      background: var(--near-black);
+      color: var(--ivory);
+      padding: 120px 32px 100px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -150px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(201,100,66,0.06) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero-overline {
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--coral);
+      margin-bottom: 24px;
     }
     .hero h1 {
-      font-size: 2.8rem;
-      font-weight: 700;
-      margin-bottom: 16px;
-      letter-spacing: -0.5px;
+      font-family: var(--font-serif);
+      font-size: 4rem;
+      font-weight: 500;
+      line-height: 1.10;
+      margin-bottom: 28px;
     }
     .hero .subtitle {
-      font-size: 1.2rem;
-      max-width: 720px;
-      margin: 0 auto 32px;
-      opacity: 0.92;
-      line-height: 1.7;
+      font-size: 1.25rem;
+      max-width: 640px;
+      margin: 0 auto 48px;
+      color: var(--warm-silver);
+      line-height: 1.60;
     }
-    .hero .badges {
+    .hero-stats {
       display: flex;
-      gap: 12px;
+      gap: 48px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+    .stat { text-align: center; }
+    .stat-number {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      font-weight: 500;
+      color: var(--coral);
+      line-height: 1.20;
+    }
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--stone-gray);
+      margin-top: 4px;
+      letter-spacing: 0.12px;
+    }
+    .cta-group {
+      display: flex;
+      gap: 16px;
       justify-content: center;
       flex-wrap: wrap;
     }
-    .hero .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(255,255,255,0.18);
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 20px;
-      padding: 6px 16px;
-      font-size: 0.9rem;
-      backdrop-filter: blur(4px);
-    }
-    .cta-buttons {
-      margin-top: 28px;
-      display: flex;
-      gap: 14px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .cta-btn {
+    .btn {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       padding: 12px 28px;
-      border-radius: 8px;
+      border-radius: 12px;
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 500;
       text-decoration: none;
       transition: transform 0.15s, box-shadow 0.15s;
+      border: none;
+      cursor: pointer;
     }
-    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
-    .cta-primary { background: #fff; color: var(--azure-blue); }
-    .cta-secondary { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.6); }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-brand {
+      background: var(--terracotta);
+      color: var(--ivory);
+      box-shadow: var(--terracotta) 0px 0px 0px 0px, var(--terracotta) 0px 0px 0px 1px;
+    }
+    .btn-brand:hover { box-shadow: rgba(0,0,0,0.08) 0px 4px 24px; }
+    .btn-dark {
+      background: var(--dark-surface);
+      color: var(--ivory);
+      border: 1px solid var(--dark-surface);
+    }
+    .btn-dark:hover { border-color: var(--stone-gray); }
+    .btn-sand {
+      background: var(--warm-sand);
+      color: var(--charcoal-warm);
+      box-shadow: var(--warm-sand) 0px 0px 0px 0px, var(--ring-warm) 0px 0px 0px 1px;
+    }
 
-    /* Container */
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+    /* ── Sections ── */
+    .section-parchment { background: var(--parchment); padding: 100px 0; }
+    .section-ivory {
+      background: var(--ivory);
+      padding: 100px 0;
+      border-top: 1px solid var(--border-cream);
+      border-bottom: 1px solid var(--border-cream);
+    }
+    .section-dark {
+      background: var(--near-black);
+      padding: 100px 0;
+      color: var(--ivory);
+    }
 
-    /* Section */
-    section { padding: 64px 0; }
-    section:nth-child(even) { background: var(--card-bg); }
+    .section-header {
+      max-width: 640px;
+      margin-bottom: 64px;
+    }
+    .section-overline {
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--terracotta);
+      margin-bottom: 16px;
+    }
+    .section-dark .section-overline { color: var(--coral); }
     .section-title {
-      font-size: 1.9rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-      color: var(--azure-dark);
+      font-family: var(--font-serif);
+      font-size: 3.25rem;
+      font-weight: 500;
+      line-height: 1.20;
+      margin-bottom: 16px;
+      color: var(--near-black);
     }
+    .section-dark .section-title { color: var(--ivory); }
     .section-desc {
-      color: var(--text-muted);
-      font-size: 1.05rem;
-      margin-bottom: 36px;
-      max-width: 700px;
+      font-size: 1.25rem;
+      color: var(--olive-gray);
+      line-height: 1.60;
+    }
+    .section-dark .section-desc { color: var(--warm-silver); }
+
+    /* ── What section (narrative + illustration placeholder) ── */
+    .what-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .what-text h3 {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      font-weight: 500;
+      line-height: 1.20;
+      margin-bottom: 20px;
+    }
+    .what-text p {
+      font-family: var(--font-serif);
+      font-size: 1.06rem;
+      color: var(--olive-gray);
+      line-height: 1.60;
+      margin-bottom: 16px;
+    }
+    .what-visual {
+      background: var(--ivory);
+      border: 1px solid var(--border-cream);
+      border-radius: 24px;
+      padding: 48px 32px;
+      text-align: center;
+    }
+    .what-visual .diagram-label {
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--stone-gray);
+      margin-bottom: 24px;
+    }
+    .flow-steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .flow-step {
+      background: var(--parchment);
+      border: 1px solid var(--border-warm);
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-family: var(--font-serif);
+      font-size: 0.94rem;
+      font-weight: 500;
+      color: var(--charcoal-warm);
+      text-align: center;
+      min-width: 100px;
+    }
+    .flow-step.active {
+      background: var(--terracotta);
+      border-color: var(--terracotta);
+      color: var(--ivory);
+    }
+    .flow-arrow {
+      color: var(--ring-warm);
+      font-size: 1.2rem;
     }
 
-    /* Concept Cards (What / Why / When) */
-    .concept-grid {
+    /* ── Why cards ── */
+    .why-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(2, 1fr);
       gap: 24px;
     }
-    .concept-card {
-      background: #fff;
-      border: 1px solid var(--border);
+    .why-card {
+      background: var(--parchment);
+      border: 1px solid var(--border-warm);
+      border-radius: 16px;
+      padding: 36px;
+      transition: box-shadow 0.2s;
+    }
+    .why-card:hover { box-shadow: rgba(0,0,0,0.05) 0px 4px 24px; }
+    .why-card h3 {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      font-weight: 500;
+      line-height: 1.20;
+      margin-bottom: 12px;
+      color: var(--near-black);
+    }
+    .why-card p {
+      font-size: 1rem;
+      color: var(--olive-gray);
+      line-height: 1.60;
+    }
+
+    /* ── When signals ── */
+    .when-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .when-item {
+      text-align: center;
+      padding: 32px 24px;
+    }
+    .when-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin: 0 auto 20px;
+      background: rgba(201,100,66,0.08);
+    }
+    .when-item p {
+      font-family: var(--font-serif);
+      font-size: 1.06rem;
+      font-weight: 500;
+      color: var(--ivory);
+      line-height: 1.30;
+    }
+
+    /* ── Models ── */
+    .model-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .model-card {
+      background: var(--ivory);
+      border: 1px solid var(--border-cream);
       border-radius: 12px;
       padding: 28px;
       transition: box-shadow 0.2s;
     }
-    .concept-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
-    .concept-card h3 {
+    .model-card:hover { box-shadow: rgba(0,0,0,0.05) 0px 4px 24px; }
+    .model-family {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12px;
+      text-transform: uppercase;
+      color: var(--stone-gray);
+      margin-bottom: 8px;
+    }
+    .model-name {
+      font-family: var(--font-serif);
       font-size: 1.3rem;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      font-weight: 500;
+      line-height: 1.20;
+      color: var(--near-black);
     }
-    .concept-card ul { padding-left: 20px; }
-    .concept-card li { margin-bottom: 6px; color: var(--text-muted); }
-    .icon-circle {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      flex-shrink: 0;
+    .model-card.featured {
+      border-color: var(--terracotta);
+      border-width: 2px;
     }
-    .icon-blue { background: var(--azure-light); color: var(--azure-blue); }
-    .icon-green { background: #e6f5e6; color: var(--accent-green); }
-    .icon-orange { background: #fff3e0; color: var(--accent-orange); }
+    .model-card.featured .model-family { color: var(--terracotta); }
 
-    /* New / Updates */
-    .update-list { list-style: none; }
-    .update-list li {
-      padding: 14px 18px;
-      border-left: 3px solid var(--azure-blue);
-      margin-bottom: 12px;
-      background: #fff;
-      border-radius: 0 8px 8px 0;
+    /* ── Learning Path (story cards) ── */
+    .path-track { margin-bottom: 64px; }
+    .path-header {
       display: flex;
       align-items: baseline;
-      gap: 12px;
+      gap: 16px;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-cream);
     }
-    .update-list .date {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      white-space: nowrap;
-      min-width: 90px;
-    }
-    .update-list a {
-      color: var(--azure-blue);
-      text-decoration: none;
+    .path-number {
+      font-family: var(--font-serif);
+      font-size: 2rem;
       font-weight: 500;
+      color: var(--terracotta);
+      line-height: 1;
     }
-    .update-list a:hover { text-decoration: underline; }
-
-    /* Learning Path */
-    .lab-group { margin-bottom: 36px; }
-    .lab-group h3 {
-      font-size: 1.2rem;
-      margin-bottom: 14px;
-      color: var(--azure-dark);
-      padding-bottom: 8px;
-      border-bottom: 2px solid var(--azure-blue);
-      display: inline-block;
+    .path-meta { flex: 1; }
+    .path-meta h3 {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      font-weight: 500;
+      line-height: 1.20;
+      color: var(--near-black);
     }
-    .lab-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
+    .path-meta .path-label {
+      font-size: 0.82rem;
+      color: var(--stone-gray);
+      margin-top: 4px;
+    }
+    .path-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12px;
+      text-transform: uppercase;
+      padding: 4px 12px;
       border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      background: rgba(201,100,66,0.08);
+      color: var(--terracotta);
+      white-space: nowrap;
+      align-self: center;
     }
-    .lab-table th {
-      text-align: left;
-      padding: 12px 16px;
-      font-weight: 600;
-      background: var(--azure-light);
-      color: var(--azure-dark);
-      font-size: 0.9rem;
+    .lab-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
     }
-    .lab-table td {
-      padding: 12px 16px;
-      border-top: 1px solid var(--border);
-      font-size: 0.95rem;
-    }
-    .lab-table a {
-      color: var(--azure-blue);
+    .lab-card {
+      background: var(--ivory);
+      border: 1px solid var(--border-cream);
+      border-radius: 12px;
+      padding: 24px;
       text-decoration: none;
+      color: var(--near-black);
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .lab-card:hover {
+      box-shadow: rgba(0,0,0,0.05) 0px 4px 24px;
+      border-color: var(--ring-warm);
+    }
+    .lab-card-num {
+      font-family: var(--font-serif);
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: var(--terracotta);
+      flex-shrink: 0;
+      line-height: 1.20;
+    }
+    .lab-card-body h4 {
+      font-family: var(--font-serif);
+      font-size: 1.06rem;
+      font-weight: 500;
+      line-height: 1.30;
+      margin-bottom: 6px;
+      color: var(--near-black);
+    }
+    .lab-card-body .lab-duration {
+      font-size: 0.82rem;
+      color: var(--stone-gray);
+    }
+
+    /* ── Updates (timeline) ── */
+    .timeline { list-style: none; position: relative; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: var(--border-warm);
+    }
+    .timeline-item {
+      padding: 0 0 32px 36px;
+      position: relative;
+    }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 2px;
+      top: 8px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--terracotta);
+      border: 2px solid var(--parchment);
+    }
+    .timeline-date {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--stone-gray);
+      letter-spacing: -0.32px;
+      margin-bottom: 6px;
+    }
+    .timeline-item a {
+      font-family: var(--font-serif);
+      font-size: 1.06rem;
+      font-weight: 500;
+      color: var(--near-black);
+      text-decoration: none;
+      line-height: 1.40;
+    }
+    .timeline-item a:hover { color: var(--terracotta); }
+    .timeline-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: rgba(201,100,66,0.08);
+      color: var(--terracotta);
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    /* ── Contributors ── */
+    .contrib-row {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .contrib-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+      color: var(--near-black);
+    }
+    .contrib-card img {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 2px solid var(--border-warm);
+    }
+    .contrib-card .contrib-name {
+      font-family: var(--font-serif);
+      font-size: 1.06rem;
       font-weight: 500;
     }
-    .lab-table a:hover { text-decoration: underline; }
-    .duration-badge {
-      background: var(--azure-light);
-      color: var(--azure-blue);
-      padding: 2px 10px;
-      border-radius: 12px;
+    .contrib-card .contrib-handle {
       font-size: 0.82rem;
-      font-weight: 600;
-      white-space: nowrap;
+      color: var(--stone-gray);
     }
+    .contrib-card:hover .contrib-name { color: var(--terracotta); }
 
-    /* Model Tags */
-    .model-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 8px;
-    }
-    .model-tag {
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      border: 1px solid var(--border);
-      background: #fff;
-    }
-    .model-tag.gpt { border-color: var(--accent-green); color: var(--accent-green); }
-    .model-tag.phi { border-color: var(--accent-purple); color: var(--accent-purple); }
-    .model-tag.llama { border-color: var(--accent-orange); color: var(--accent-orange); }
-
-    /* Footer */
-    footer {
-      background: var(--azure-dark);
-      color: rgba(255,255,255,0.8);
-      padding: 40px 20px;
+    /* ── CTA Banner (Dark) ── */
+    .cta-banner {
       text-align: center;
     }
-    footer a { color: #8ecfff; text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
-    footer .footer-links {
-      display: flex;
-      gap: 24px;
-      justify-content: center;
-      flex-wrap: wrap;
+    .cta-banner h2 {
+      font-family: var(--font-serif);
+      font-size: 2.5rem;
+      font-weight: 500;
+      line-height: 1.20;
+      color: var(--ivory);
       margin-bottom: 16px;
     }
+    .cta-banner p {
+      font-size: 1.1rem;
+      color: var(--warm-silver);
+      line-height: 1.60;
+      margin-bottom: 36px;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
-    /* Responsive */
-    @media (max-width: 640px) {
+    /* ── Footer ── */
+    footer {
+      background: var(--near-black);
+      color: var(--warm-silver);
+      padding: 48px 32px;
+      border-top: 1px solid var(--dark-surface);
+    }
+    .footer-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 32px;
+    }
+    .footer-brand {
+      font-family: var(--font-serif);
+      font-size: 1.06rem;
+      font-weight: 500;
+      color: var(--ivory);
+      margin-bottom: 8px;
+    }
+    .footer-copy { font-size: 0.88rem; color: var(--stone-gray); }
+    .footer-links-group { display: flex; gap: 40px; flex-wrap: wrap; }
+    .footer-col h4 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--stone-gray);
+      margin-bottom: 14px;
+    }
+    .footer-col a {
+      display: block;
+      font-size: 0.94rem;
+      color: var(--warm-silver);
+      text-decoration: none;
+      margin-bottom: 10px;
+      transition: color 0.15s;
+    }
+    .footer-col a:hover { color: var(--ivory); }
+
+    /* ── Responsive ── */
+    @media (max-width: 991px) {
+      .what-content { grid-template-columns: 1fr; gap: 40px; }
+      .why-grid { grid-template-columns: 1fr; }
+      .when-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 767px) {
+      .hero h1 { font-size: 2.5rem; }
+      .hero { padding: 80px 24px 64px; }
+      .section-title { font-size: 2rem; }
+      .section-parchment, .section-ivory, .section-dark { padding: 64px 0; }
+      .nav-links { display: none; }
+      .when-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 32px; }
+      .footer-inner { flex-direction: column; }
+      .lab-cards { grid-template-columns: 1fr; }
+      .path-header { flex-direction: column; gap: 8px; }
+      .container { padding: 0 20px; }
+    }
+    @media (max-width: 479px) {
       .hero h1 { font-size: 2rem; }
-      .hero .subtitle { font-size: 1rem; }
-      section { padding: 40px 0; }
-      .update-list li { flex-direction: column; gap: 4px; }
+      .model-grid { grid-template-columns: 1fr 1fr; }
+      .flow-steps { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); }
     }
   </style>
 </head>
 <body>
 
-  <!-- Hero -->
+  <!-- Navigation -->
+  <nav class="nav">
+    <a class="nav-brand" href="#">LLM Fine-Tuning</a>
+    <ul class="nav-links">
+      <li><a href="#what">What</a></li>
+      <li><a href="#why">Why</a></li>
+      <li><a href="#models">Models</a></li>
+      <li><a href="#path">Learning Path</a></li>
+      <li><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure" class="nav-cta">View Repository</a></li>
+    </ul>
+  </nav>
+
+  <!-- ════════════════════════════════════════
+       Hero — Dark
+       ════════════════════════════════════════ -->
   <header class="hero">
-    <h1>LLM Fine-Tuning using Azure</h1>
-    <p class="subtitle">
-      A modular, beginner-to-expert guide for customizing OpenAI GPT models and
-      open-source LLMs/SLMs on Azure &mdash; designed for Data Scientists, ML Engineers,
-      and even those without a deep technical background.
-    </p>
-    <div class="badges">
-      <span class="badge">&#9733; 50 Stars</span>
-      <span class="badge">&#128220; MIT License</span>
-      <span class="badge">&#128101; 4 Contributors</span>
-    </div>
-    <div class="cta-buttons">
-      <a class="cta-btn cta-primary" href="https://github.com/Azure/LLM-Fine-Tuning-Azure">&#128193; View on GitHub</a>
-      <a class="cta-btn cta-secondary" href="https://github.com/Azure/LLM-Fine-Tuning-Azure/tree/main/labs">&#128640; Jump to Labs</a>
+    <div class="container">
+      <div class="hero-overline">Azure AI &middot; Fine-Tuning Guide</div>
+      <h1>Fine-Tune Large Language<br>Models on Azure</h1>
+      <p class="subtitle">
+        A modular, beginner-to-expert guide for customizing OpenAI GPT and
+        open-source models &mdash; designed for Data Scientists, ML Engineers,
+        and everyone in between.
+      </p>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-number">8</div>
+          <div class="stat-label">Supported Models</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">15</div>
+          <div class="stat-label">Hands-on Labs</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Skill Levels</div>
+        </div>
+      </div>
+      <div class="cta-group">
+        <a class="btn btn-brand" href="https://github.com/Azure/LLM-Fine-Tuning-Azure">View on GitHub</a>
+        <a class="btn btn-dark" href="#path">Explore Learning Path</a>
+      </div>
     </div>
   </header>
 
-  <!-- Supported Models -->
-  <section>
+  <!-- ════════════════════════════════════════
+       What is Fine-Tuning — Parchment
+       ════════════════════════════════════════ -->
+  <section id="what" class="section-parchment">
     <div class="container">
-      <h2 class="section-title">Supported Models</h2>
-      <p class="section-desc">Fine-tune a range of frontier and open-source models on Azure.</p>
-      <div class="model-tags">
-        <span class="model-tag gpt">GPT-4o</span>
-        <span class="model-tag gpt">GPT-4o-mini</span>
-        <span class="model-tag gpt">GPT-4.1-mini</span>
-        <span class="model-tag gpt">GPT-3.5 Turbo</span>
-        <span class="model-tag phi">Phi-4-mini</span>
-        <span class="model-tag phi">Phi-3-mini</span>
-        <span class="model-tag llama">Llama 3.2-11B Vision</span>
-        <span class="model-tag llama">Llama 2-7B</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- What / Why / When -->
-  <section>
-    <div class="container">
-      <h2 class="section-title">Overview</h2>
-      <div class="concept-grid">
-        <div class="concept-card">
-          <h3><span class="icon-circle icon-blue">&#128218;</span> What is Fine-Tuning?</h3>
-          <p>Supervised Fine-Tuning retrains an existing pre-trained LLM using example data, producing a new &ldquo;custom&rdquo; model optimized for your task-specific examples.</p>
+      <div class="what-content">
+        <div class="what-text">
+          <div class="section-overline">What it is</div>
+          <h3>Retraining models for your&nbsp;specific&nbsp;tasks</h3>
+          <p>
+            Supervised Fine-Tuning takes an existing pre-trained language model and
+            retrains it using your own example data. The result is a new
+            &ldquo;custom&rdquo; model &mdash; one that understands your domain, speaks
+            in your tone, and performs with the accuracy your use case demands.
+          </p>
+          <p>
+            Think of it as the difference between hiring a generalist and an expert.
+            The base model has broad knowledge; fine-tuning sharpens it into a specialist.
+          </p>
         </div>
-        <div class="concept-card">
-          <h3><span class="icon-circle icon-green">&#9989;</span> Why Fine-Tune?</h3>
-          <ul>
-            <li>Improve LLM performance on specific tasks</li>
-            <li>Introduce information not well represented by the base model</li>
-            <li>Steer outputs in a specific style or tone</li>
-            <li>Handle prompts too long or complex for the context window</li>
-          </ul>
-        </div>
-        <div class="concept-card">
-          <h3><span class="icon-circle icon-orange">&#128161;</span> When to Fine-Tune?</h3>
-          <ul>
-            <li>Prompt Engineering and RAG aren&rsquo;t enough</li>
-            <li>Latency is critically important</li>
-            <li>High accuracy is required</li>
-            <li>You have thousands of high-quality samples</li>
-            <li>Clear evaluation metrics are available</li>
-          </ul>
+        <div class="what-visual">
+          <div class="diagram-label">The Fine-Tuning Flow</div>
+          <div class="flow-steps">
+            <div class="flow-step">Base Model</div>
+            <span class="flow-arrow">&rarr;</span>
+            <div class="flow-step">+ Your Data</div>
+            <span class="flow-arrow">&rarr;</span>
+            <div class="flow-step active">Custom Model</div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- What's New -->
-  <section>
+  <!-- ════════════════════════════════════════
+       Why Fine-Tune — Ivory
+       ════════════════════════════════════════ -->
+  <section id="why" class="section-ivory">
     <div class="container">
-      <h2 class="section-title">What&rsquo;s New</h2>
-      <p class="section-desc">Recent additions and updates to the repository.</p>
-      <ul class="update-list">
-        <li>
-          <span class="date">2026-03-16</span>
-          <span><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/gpt_fine_tuning/gpt4o_fine_tuning_vision_text_chartanalysis.ipynb">SFT Fine-tuning GPT-4o for Chart Analysis (Pro-Code)</a></span>
+      <div class="section-header">
+        <div class="section-overline">Why use it</div>
+        <h2 class="section-title">Go beyond prompting</h2>
+        <p class="section-desc">When prompt engineering and RAG have reached their limits, fine-tuning unlocks the next level of model performance.</p>
+      </div>
+      <div class="why-grid">
+        <div class="why-card">
+          <h3>Task-specific accuracy</h3>
+          <p>Dramatically improve performance on narrow tasks where the base model falls short &mdash; from domain Q&amp;A to structured data extraction.</p>
+        </div>
+        <div class="why-card">
+          <h3>Consistent style &amp; tone</h3>
+          <p>Steer outputs to match your brand voice, clinical terminology, or legal language without elaborate system prompts.</p>
+        </div>
+        <div class="why-card">
+          <h3>Lower latency at scale</h3>
+          <p>Replace long, complex prompts with learned behavior. Shorter inputs mean faster inference and reduced token costs in production.</p>
+        </div>
+        <div class="why-card">
+          <h3>Encode rare knowledge</h3>
+          <p>Introduce information that the base model never learned well &mdash; proprietary processes, niche domains, or evolving regulations.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       When to Fine-Tune — Dark
+       ════════════════════════════════════════ -->
+  <section class="section-dark">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-overline">When to use it</div>
+        <h2 class="section-title">Signals that you&rsquo;re ready</h2>
+        <p class="section-desc">Fine-tuning is recommended when the following conditions are met.</p>
+      </div>
+      <div class="when-grid">
+        <div class="when-item">
+          <div class="when-icon">&#128269;</div>
+          <p>Prompt engineering and RAG aren&rsquo;t enough</p>
+        </div>
+        <div class="when-item">
+          <div class="when-icon">&#9201;</div>
+          <p>Latency is critically important</p>
+        </div>
+        <div class="when-item">
+          <div class="when-icon">&#127919;</div>
+          <p>High accuracy is a hard requirement</p>
+        </div>
+        <div class="when-item">
+          <div class="when-icon">&#128202;</div>
+          <p>Thousands of high-quality labeled samples</p>
+        </div>
+        <div class="when-item">
+          <div class="when-icon">&#9989;</div>
+          <p>Clear evaluation metrics to benchmark</p>
+        </div>
+        <div class="when-item">
+          <div class="when-icon">&#128736;</div>
+          <p>Deep customization beyond surface prompts</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       Supported Models — Parchment
+       ════════════════════════════════════════ -->
+  <section id="models" class="section-parchment">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-overline">Supported models</div>
+        <h2 class="section-title">From frontier to open source</h2>
+        <p class="section-desc">Fine-tune a range of models on Azure, from OpenAI&rsquo;s latest GPT series to Microsoft Phi and Meta Llama.</p>
+      </div>
+      <div class="model-grid">
+        <div class="model-card featured">
+          <div class="model-family">OpenAI</div>
+          <div class="model-name">GPT-4o</div>
+        </div>
+        <div class="model-card">
+          <div class="model-family">OpenAI</div>
+          <div class="model-name">GPT-4o-mini</div>
+        </div>
+        <div class="model-card">
+          <div class="model-family">OpenAI</div>
+          <div class="model-name">GPT-4.1-mini</div>
+        </div>
+        <div class="model-card">
+          <div class="model-family">OpenAI</div>
+          <div class="model-name">GPT-3.5 Turbo</div>
+        </div>
+        <div class="model-card featured">
+          <div class="model-family">Microsoft</div>
+          <div class="model-name">Phi-4-mini</div>
+        </div>
+        <div class="model-card">
+          <div class="model-family">Microsoft</div>
+          <div class="model-name">Phi-3-mini</div>
+        </div>
+        <div class="model-card">
+          <div class="model-family">Meta</div>
+          <div class="model-name">Llama 3.2-11B Vision</div>
+        </div>
+        <div class="model-card">
+          <div class="model-family">Meta</div>
+          <div class="model-name">Llama 2-7B</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       Learning Path — Ivory
+       ════════════════════════════════════════ -->
+  <section id="path" class="section-ivory">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-overline">Learning path</div>
+        <h2 class="section-title">From first click to production model</h2>
+        <p class="section-desc">A progressive curriculum that takes you from dashboard UI to Python SDK to open-source frameworks.</p>
+      </div>
+
+      <!-- Track 1 -->
+      <div class="path-track">
+        <div class="path-header">
+          <div class="path-number">01</div>
+          <div class="path-meta">
+            <h3>Azure AI Foundry Dashboard</h3>
+            <div class="path-label">Point-and-click fine-tuning &mdash; no code required</div>
+          </div>
+          <div class="path-badge">No-Code</div>
+        </div>
+        <div class="lab-cards">
+          <a class="lab-card" href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_dashboards/gpt_fine_tuning_aoai_dashboard.md">
+            <div class="lab-card-num">1.1</div>
+            <div class="lab-card-body">
+              <h4>Supervised Fine-Tuning GPT-3.5</h4>
+              <div class="lab-duration">~1 hour</div>
+            </div>
+          </a>
+          <a class="lab-card" href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_dashboards/llama2_fine_tuning_aml_dashboard.md">
+            <div class="lab-card-num">1.2</div>
+            <div class="lab-card-body">
+              <h4>Supervised Fine-Tuning Llama 2</h4>
+              <div class="lab-duration">~1 hour</div>
+            </div>
+          </a>
+          <a class="lab-card" href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_dashboards/gpt_4o_mini_fine_tuning_azure_ai_foundry_dashboard.md">
+            <div class="lab-card-num">1.3</div>
+            <div class="lab-card-body">
+              <h4>Supervised Fine-Tuning GPT-4o-mini</h4>
+              <div class="lab-duration">~1 hour</div>
+            </div>
+          </a>
+          <a class="lab-card" href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_dashboards/gpt_4.1_mini_fine_tuning_azure_ai_foundry_dashboard.md">
+            <div class="lab-card-num">1.4</div>
+            <div class="lab-card-body">
+              <h4>Supervised Fine-Tuning GPT-4.1-mini</h4>
+              <div class="lab-duration">~1 hour</div>
+            </div>
+          </a>
+          <a class="lab-card" href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_dashboards/phi_4_mini_fine_tuning_azure_ai_foundry_dashboard.md">
+            <div class="lab-card-num">1.5</div>
+            <div class="lab-card-body">
+              <h4>Supervised Fine-Tuning Phi-4-mini</h4>
+              <div class="lab-duration">~1 hour</div>
+            </div>
+          </a>
+          <a class="lab-card" href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_dashboards/gpt_4o_mini_rft_fine_tuning_azure_ai_foundry_dashboard.md">
+            <div class="lab-card-num">1.6</div>
+            <div class="lab-card-body">
+              <h4>Reinforcement Fine-Tuning GPT-4o-mini</h4>
+              <div class="lab-duration">~1 hour</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Track 2 -->
+      <div class="path-track">
+        <div class="path-header">
+          <div class="path-number">02</div>
+          <div class="path-meta">
+            <h3>Azure Python SDK</h3>
+            <div class="path-label">Programmatic control with Jupyter notebooks</div>
+          </div>
+          <div class="path-badge">Low-Code</div>
+        </div>
+        <div class="lab-cards">
+          <a class="lab-card" href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/gpt_fine_tuning/gpt_35_turbo_fine_tuning.ipynb">
+            <div class="lab-card-num">2.1</div>
+            <div class="lab-card-body">
+              <h4>Supervised Fine-Tuning GPT-3.5</h4>
+              <div class="lab-duration">~2 hours</div>
+            </div>
+          </a>
+          <a class="lab-card" href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/llama2_fine_tuning/llama_2_7b_fine_tuning.ipynb">
+            <div class="lab-card-num">2.2</div>
+            <div class="lab-card-body">
+              <h4>Supervised Fine-Tuning Llama 2</h4>
+              <div class="lab-duration">~2 hours</div>
+            </div>
+          </a>
+          <a class="lab-card" href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/gpt_fine_tuning/gpt_4o_supervised_fine_tuning_for_text_qa.ipynb">
+            <div class="lab-card-num">2.3</div>
+            <div class="lab-card-body">
+              <h4>Supervised Fine-Tuning GPT-4o</h4>
+              <div class="lab-duration">~2 hours</div>
+            </div>
+          </a>
+          <a class="lab-card" href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/gpt_fine_tuning/gpt_4o_dpo_fine_tuning_for_text_qa.ipynb">
+            <div class="lab-card-num">2.4</div>
+            <div class="lab-card-body">
+              <h4>DPO Fine-Tuning GPT-4o</h4>
+              <div class="lab-duration">~2 hours</div>
+            </div>
+          </a>
+          <a class="lab-card" href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/phi_fine_tuning/phi_4_mini_supervised_fine_tuning_for_text_qa.ipynb">
+            <div class="lab-card-num">2.5</div>
+            <div class="lab-card-body">
+              <h4>Supervised Fine-Tuning Phi-4-mini</h4>
+              <div class="lab-duration">~2 hours</div>
+            </div>
+          </a>
+          <a class="lab-card" href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/gpt_fine_tuning/gpt_4o_dpo_fine_tuning_for_text_qa_v2.ipynb">
+            <div class="lab-card-num">2.6</div>
+            <div class="lab-card-body">
+              <h4>DPO Fine-Tuning GPT-4o (v2)</h4>
+              <div class="lab-duration">~2 hours</div>
+            </div>
+          </a>
+          <a class="lab-card" href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/gpt_fine_tuning/gpt4o_fine_tuning_vision_text_chartanalysis.ipynb">
+            <div class="lab-card-num">2.7</div>
+            <div class="lab-card-body">
+              <h4>SFT GPT-4o for Vision + Chart Analysis</h4>
+              <div class="lab-duration">~2 hours</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Track 3 -->
+      <div class="path-track">
+        <div class="path-header">
+          <div class="path-number">03</div>
+          <div class="path-meta">
+            <h3>Open Source Tools</h3>
+            <div class="path-label">Full control with Unsloth, LoRA, and Hugging Face TRL</div>
+          </div>
+          <div class="path-badge">Pro-Code</div>
+        </div>
+        <div class="lab-cards">
+          <a class="lab-card" href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/llama3_fine_tuning/llama3.2-11b-supervised-fine-tuning-for-vision-text-qa-using-unsloth.ipynb">
+            <div class="lab-card-num">3.1</div>
+            <div class="lab-card-body">
+              <h4>SFT Llama 3.2-11B Vision with Unsloth AI</h4>
+              <div class="lab-duration">~3 hours</div>
+            </div>
+          </a>
+          <a class="lab-card" href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/phi_fine_tuning/phi_3_mini_instruct_supervised_fine_tuning_for_text_qa_using_lora_from_hf_trl.ipynb">
+            <div class="lab-card-num">3.2</div>
+            <div class="lab-card-body">
+              <h4>SFT Phi-3-Mini with LoRA &amp; Hugging Face TRL</h4>
+              <div class="lab-duration">~3 hours</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       What's New — Parchment (timeline)
+       ════════════════════════════════════════ -->
+  <section class="section-parchment">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-overline">What&rsquo;s new</div>
+        <h2 class="section-title">Recent updates</h2>
+      </div>
+      <ul class="timeline">
+        <li class="timeline-item">
+          <div class="timeline-date">March 16, 2026</div>
+          <a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/gpt_fine_tuning/gpt4o_fine_tuning_vision_text_chartanalysis.ipynb">SFT Fine-tuning GPT-4o for Chart Analysis</a>
+          <span class="timeline-tag">Pro-Code</span>
         </li>
-        <li>
-          <span class="date">2026-03-16</span>
-          <span><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/gpt_fine_tuning/gpt_4o_dpo_fine_tuning_for_text_qa_v2.ipynb">DPO Fine-Tuning GPT-4o for Text Q&amp;A &ndash; Python SDK (Pro-Code)</a></span>
+        <li class="timeline-item">
+          <div class="timeline-date">March 16, 2026</div>
+          <a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/gpt_fine_tuning/gpt_4o_dpo_fine_tuning_for_text_qa_v2.ipynb">DPO Fine-Tuning GPT-4o for Text Q&amp;A</a>
+          <span class="timeline-tag">Pro-Code</span>
         </li>
-        <li>
-          <span class="date">2026-03-16</span>
-          <span><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_dashboards/gpt_4o_mini_rft_fine_tuning_azure_ai_foundry_dashboard.md">RFT Fine-Tuning GPT-4o-mini &ndash; AI Foundry Dashboard (No-Code)</a></span>
+        <li class="timeline-item">
+          <div class="timeline-date">March 16, 2026</div>
+          <a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_dashboards/gpt_4o_mini_rft_fine_tuning_azure_ai_foundry_dashboard.md">RFT Fine-Tuning GPT-4o-mini via AI Foundry</a>
+          <span class="timeline-tag">No-Code</span>
         </li>
-        <li>
-          <span class="date">2025-08-01</span>
-          <span><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/phi_fine_tuning/phi_3_mini_instruct_supervised_fine_tuning_for_text_qa_using_lora_from_hf_trl.ipynb">Phi-3-mini Fine-Tuning using LoRA from Hugging Face TRL (Pro-Code)</a></span>
+        <li class="timeline-item">
+          <div class="timeline-date">August 1, 2025</div>
+          <a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/phi_fine_tuning/phi_3_mini_instruct_supervised_fine_tuning_for_text_qa_using_lora_from_hf_trl.ipynb">Phi-3-mini Fine-Tuning with LoRA &amp; HF TRL</a>
+          <span class="timeline-tag">Pro-Code</span>
         </li>
-        <li>
-          <span class="date">2025-07-07</span>
-          <span><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/phi_fine_tuning/phi_4_mini_supervised_fine_tuning_for_text_qa.ipynb">Phi-4-mini Fine-Tuning using Azure Python SDK (Low-Code)</a></span>
+        <li class="timeline-item">
+          <div class="timeline-date">July 7, 2025</div>
+          <a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/phi_fine_tuning/phi_4_mini_supervised_fine_tuning_for_text_qa.ipynb">Phi-4-mini Fine-Tuning via Azure Python SDK</a>
+          <span class="timeline-tag">Low-Code</span>
         </li>
-        <li>
-          <span class="date">2025-06-22</span>
-          <span><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/llama3_fine_tuning/llama3.2-11b-supervised-fine-tuning-for-vision-text-qa-using-unsloth.ipynb">Llama3.2-11B Vision Fine-Tuning using Unsloth AI (Pro-Code)</a></span>
+        <li class="timeline-item">
+          <div class="timeline-date">June 22, 2025</div>
+          <a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/llama3_fine_tuning/llama3.2-11b-supervised-fine-tuning-for-vision-text-qa-using-unsloth.ipynb">Llama 3.2-11B Vision Fine-Tuning with Unsloth</a>
+          <span class="timeline-tag">Pro-Code</span>
         </li>
       </ul>
     </div>
   </section>
 
-  <!-- Learning Path -->
-  <section>
+  <!-- ════════════════════════════════════════
+       Contributors — Ivory
+       ════════════════════════════════════════ -->
+  <section class="section-ivory">
     <div class="container">
-      <h2 class="section-title">Learning Path</h2>
-      <p class="section-desc">A structured, progressive curriculum from dashboard UI (no-code) to Python SDK (low-code) to open-source tools (pro-code).</p>
-
-      <!-- Lab 1 -->
-      <div class="lab-group">
-        <h3>Lab 1 &mdash; Fine-Tuning via Azure AI Foundry Dashboard</h3>
-        <table class="lab-table">
-          <thead><tr><th>Lab</th><th>Description</th><th>Duration</th></tr></thead>
-          <tbody>
-            <tr>
-              <td><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_dashboards/gpt_fine_tuning_aoai_dashboard.md">Lab 1.1</a></td>
-              <td>Supervised Fine-Tuning GPT-3.5 Models</td>
-              <td><span class="duration-badge">1 h</span></td>
-            </tr>
-            <tr>
-              <td><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_dashboards/llama2_fine_tuning_aml_dashboard.md">Lab 1.2</a></td>
-              <td>Supervised Fine-Tuning Llama 2 Models</td>
-              <td><span class="duration-badge">1 h</span></td>
-            </tr>
-            <tr>
-              <td><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_dashboards/gpt_4o_mini_fine_tuning_azure_ai_foundry_dashboard.md">Lab 1.3</a></td>
-              <td>Supervised Fine-Tuning GPT-4o-mini Model</td>
-              <td><span class="duration-badge">1 h</span></td>
-            </tr>
-            <tr>
-              <td><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_dashboards/gpt_4.1_mini_fine_tuning_azure_ai_foundry_dashboard.md">Lab 1.4</a></td>
-              <td>Supervised Fine-Tuning GPT-4.1-mini Model</td>
-              <td><span class="duration-badge">1 h</span></td>
-            </tr>
-            <tr>
-              <td><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_dashboards/phi_4_mini_fine_tuning_azure_ai_foundry_dashboard.md">Lab 1.5</a></td>
-              <td>Supervised Fine-Tuning Phi-4-mini Model</td>
-              <td><span class="duration-badge">1 h</span></td>
-            </tr>
-            <tr>
-              <td><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_dashboards/gpt_4o_mini_rft_fine_tuning_azure_ai_foundry_dashboard.md">Lab 1.6</a></td>
-              <td>Reinforcement Fine-Tuning GPT-4o-mini Model</td>
-              <td><span class="duration-badge">1 h</span></td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="section-header">
+        <div class="section-overline">Contributors</div>
+        <h2 class="section-title">Built by the community</h2>
       </div>
-
-      <!-- Lab 2 -->
-      <div class="lab-group">
-        <h3>Lab 2 &mdash; Fine-Tuning via Azure Python SDK</h3>
-        <table class="lab-table">
-          <thead><tr><th>Lab</th><th>Description</th><th>Duration</th></tr></thead>
-          <tbody>
-            <tr>
-              <td><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/gpt_fine_tuning/gpt_35_turbo_fine_tuning.ipynb">Lab 2.1</a></td>
-              <td>Supervised Fine-Tuning GPT-3.5 Models</td>
-              <td><span class="duration-badge">2 h</span></td>
-            </tr>
-            <tr>
-              <td><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/llama2_fine_tuning/llama_2_7b_fine_tuning.ipynb">Lab 2.2</a></td>
-              <td>Supervised Fine-Tuning Llama 2 Models</td>
-              <td><span class="duration-badge">2 h</span></td>
-            </tr>
-            <tr>
-              <td><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/gpt_fine_tuning/gpt_4o_supervised_fine_tuning_for_text_qa.ipynb">Lab 2.3</a></td>
-              <td>Supervised Fine-Tuning GPT-4o Model</td>
-              <td><span class="duration-badge">2 h</span></td>
-            </tr>
-            <tr>
-              <td><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/gpt_fine_tuning/gpt_4o_dpo_fine_tuning_for_text_qa.ipynb">Lab 2.4</a></td>
-              <td>DPO Fine-Tuning GPT-4o Model</td>
-              <td><span class="duration-badge">2 h</span></td>
-            </tr>
-            <tr>
-              <td><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/phi_fine_tuning/phi_4_mini_supervised_fine_tuning_for_text_qa.ipynb">Lab 2.5</a></td>
-              <td>Supervised Fine-Tuning Phi-4-mini Model</td>
-              <td><span class="duration-badge">2 h</span></td>
-            </tr>
-            <tr>
-              <td><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/gpt_fine_tuning/gpt_4o_dpo_fine_tuning_for_text_qa_v2.ipynb">Lab 2.6</a></td>
-              <td>DPO Fine-Tuning GPT-4o Model (Python SDK v2)</td>
-              <td><span class="duration-badge">2 h</span></td>
-            </tr>
-            <tr>
-              <td><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/gpt_fine_tuning/gpt4o_fine_tuning_vision_text_chartanalysis.ipynb">Lab 2.7</a></td>
-              <td>SFT GPT-4o for Vision + Text Chart Analysis</td>
-              <td><span class="duration-badge">2 h</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Lab 3 -->
-      <div class="lab-group">
-        <h3>Lab 3 &mdash; Fine-Tuning via Open Source Tools</h3>
-        <table class="lab-table">
-          <thead><tr><th>Lab</th><th>Description</th><th>Duration</th></tr></thead>
-          <tbody>
-            <tr>
-              <td><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/llama3_fine_tuning/llama3.2-11b-supervised-fine-tuning-for-vision-text-qa-using-unsloth.ipynb">Lab 3.1</a></td>
-              <td>SFT Llama 3.2-11B Vision using Unsloth AI</td>
-              <td><span class="duration-badge">3 h</span></td>
-            </tr>
-            <tr>
-              <td><a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/labs/fine_tuning_notebooks/phi_fine_tuning/phi_3_mini_instruct_supervised_fine_tuning_for_text_qa_using_lora_from_hf_trl.ipynb">Lab 3.2</a></td>
-              <td>SFT Phi-3-Mini using LoRA from Hugging Face TRL</td>
-              <td><span class="duration-badge">3 h</span></td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="contrib-row">
+        <a class="contrib-card" href="https://github.com/HeZhang33">
+          <img src="https://github.com/HeZhang33.png?size=104" alt="He Zhang">
+          <div>
+            <div class="contrib-name">He Zhang</div>
+            <div class="contrib-handle">@HeZhang33</div>
+          </div>
+        </a>
+        <a class="contrib-card" href="https://github.com/pradorodriguez">
+          <img src="https://github.com/pradorodriguez.png?size=104" alt="Marco Prado">
+          <div>
+            <div class="contrib-name">Marco Prado</div>
+            <div class="contrib-handle">@pradorodriguez</div>
+          </div>
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- Contributors -->
-  <section>
-    <div class="container">
-      <h2 class="section-title">Contributors</h2>
-      <div style="display: flex; gap: 24px; flex-wrap: wrap; margin-top: 8px;">
-        <a href="https://github.com/HeZhang33" style="text-decoration:none; color: var(--text); display:flex; align-items:center; gap:10px;">
-          <img src="https://github.com/HeZhang33.png?size=48" alt="He Zhang" width="48" height="48" style="border-radius:50%;">
-          <span style="font-weight:600;">He Zhang</span>
-        </a>
-        <a href="https://github.com/pradorodriguez" style="text-decoration:none; color: var(--text); display:flex; align-items:center; gap:10px;">
-          <img src="https://github.com/pradorodriguez.png?size=48" alt="Marco Prado" width="48" height="48" style="border-radius:50%;">
-          <span style="font-weight:600;">Marco Prado</span>
-        </a>
-        <a href="https://github.com/klarke-hezhang-cn" style="text-decoration:none; color: var(--text); display:flex; align-items:center; gap:10px;">
-          <img src="https://github.com/klarke-hezhang-cn.png?size=48" alt="klarke-hezhang-cn" width="48" height="48" style="border-radius:50%;">
-          <span style="font-weight:600;">klarke-hezhang-cn</span>
-        </a>
+  <!-- ════════════════════════════════════════
+       CTA Banner — Dark
+       ════════════════════════════════════════ -->
+  <section class="section-dark">
+    <div class="container cta-banner">
+      <h2>Ready to fine-tune<br>your first model?</h2>
+      <p>Start with the dashboard labs for a zero-code introduction, then progress to the SDK and open-source tracks at your own pace.</p>
+      <div class="cta-group">
+        <a class="btn btn-brand" href="https://github.com/Azure/LLM-Fine-Tuning-Azure">View on GitHub</a>
+        <a class="btn btn-dark" href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/LICENSE">MIT License</a>
       </div>
     </div>
   </section>
 
   <!-- Footer -->
   <footer>
-    <div class="footer-links">
-      <a href="https://github.com/Azure/LLM-Fine-Tuning-Azure">GitHub Repository</a>
-      <a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/issues">Issues</a>
-      <a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/CONTRIBUTING.md">Contributing</a>
-      <a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/LICENSE">MIT License</a>
-      <a href="https://opensource.microsoft.com/codeofconduct/">Code of Conduct</a>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">LLM Fine-Tuning using Azure</div>
+        <div class="footer-copy">&copy; Microsoft Corporation. All rights reserved.</div>
+      </div>
+      <div class="footer-links-group">
+        <div class="footer-col">
+          <h4>Repository</h4>
+          <a href="https://github.com/Azure/LLM-Fine-Tuning-Azure">Source Code</a>
+          <a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/issues">Issues</a>
+          <a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/pulls">Pull Requests</a>
+        </div>
+        <div class="footer-col">
+          <h4>Community</h4>
+          <a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/CONTRIBUTING.md">Contributing</a>
+          <a href="https://opensource.microsoft.com/codeofconduct/">Code of Conduct</a>
+          <a href="https://github.com/Azure/LLM-Fine-Tuning-Azure/blob/main/SECURITY.md">Security</a>
+        </div>
+      </div>
     </div>
-    <p>&copy; Microsoft Corporation. All rights reserved.</p>
   </footer>
 
 </body>
